@@ -231,6 +231,9 @@ importers:
       '@elizaos/plugin-zksync-era':
         specifier: workspace:*
         version: link:../packages/plugin-zksync-era
+      '@us3r/plugin-degencast':
+        specifier: workspace:*
+        version: link:../packages/plugin-degencast
       readline:
         specifier: 1.3.0
         version: 1.3.0
