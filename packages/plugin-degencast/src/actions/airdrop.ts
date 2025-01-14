@@ -14,7 +14,8 @@ import {
 
 import { airdrop, getAirdropStatus, DEGENCAST_WEB_URL } from "../utils.ts";
 import { ApiRespCode, ClaimStatus } from "../types/index.ts";
-
+import { Cast } from "@neynar/nodejs-sdk/build/api";
+import { Tweet } from "agent-twitter-client";
 // export const shouldAirdropTemplate =
 //     `Based on the conversation so far:
 
@@ -50,14 +51,22 @@ export const airdropAction: Action = {
         } else {
             state = await runtime.updateRecentMessageState(state);
         }
-
+        const castHash: `0x${string}` | undefined = (
+            message.content.cast as Cast
+        )?.hash as `0x${string}`;
+        const castFid: number | undefined = (message.content.cast as Cast)
+            ?.author?.fid;
+        const tweetUsername: string | undefined = (
+            message.content.tweet as Tweet
+        )?.username;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         async function _shouldAirdrop(state: State): Promise<boolean> {
             // console.log("Checking airdrop status...", state);
             // get airdrop status
             console.log("Checking airdrop status...");
             const airdropStatusResp = await getAirdropStatus({
-                castHash: message.content.hash as `0x${string}`,
+                castHash,
+                tweetUsername,
             });
             elizaLogger.log("Airdrop Status:", airdropStatusResp);
             // Check if the user has verified their addresses
@@ -124,7 +133,8 @@ export const airdropAction: Action = {
             console.log("Executing airdrop api call...");
             try {
                 const result = await airdrop({
-                    castHash: message.content.hash as `0x${string}`,
+                    castHash,
+                    tweetUsername,
                 });
                 elizaLogger.log("Airdrop api call result: ", result);
 

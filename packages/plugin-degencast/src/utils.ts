@@ -92,13 +92,15 @@ export const createMeme = async ({
 
 export const airdrop = async ({
     castHash,
+    tweetUsername,
 }: {
     castHash: `0x${string}` | undefined;
+    tweetUsername: string | undefined;
 }): Promise<ApiResp<AirDropData>> => {
-    if (!castHash) {
+    if (!castHash && !tweetUsername) {
         return {
             code: ApiRespCode.ERROR,
-            msg: "Cast hash is required",
+            msg: "Cast hash or twitter username is required",
         };
     }
 
@@ -110,7 +112,7 @@ export const airdrop = async ({
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ castHash }),
+            body: JSON.stringify({ castHash, tweetUsername }),
         });
 
         const respData = await resp.json();
@@ -127,13 +129,15 @@ export const airdrop = async ({
 
 export const getAirdropStatus = async ({
     castHash,
+    tweetUsername,
 }: {
     castHash: `0x${string}` | undefined;
+    tweetUsername: string | undefined;
 }): Promise<ApiResp<AirdropStatus>> => {
-    if (!castHash) {
+    if (!castHash && !tweetUsername) {
         return {
             code: ApiRespCode.ERROR,
-            msg: "Cast hash is required",
+            msg: "Cast hash or twitter username is required",
         };
     }
 
@@ -141,7 +145,11 @@ export const getAirdropStatus = async ({
         console.log("get cast author airdrop status", castHash);
 
         const resp = await fetch(
-            DEGENCAST_API_URL + "/memes/airdrop/users?castHash=" + castHash,
+            DEGENCAST_API_URL +
+                "/memes/airdrop/users?castHash=" +
+                castHash +
+                "&twitterUsername=" +
+                tweetUsername,
             {
                 method: "GET",
                 headers: {
