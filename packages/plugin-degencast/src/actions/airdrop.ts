@@ -56,6 +56,8 @@ export const airdropAction: Action = {
         )?.hash as `0x${string}`;
         const castFid: number | undefined = (message.content.cast as Cast)
             ?.author?.fid;
+        const tweetId: string | undefined = (message.content.tweet as Tweet)
+            ?.id;
         const tweetUsername: string | undefined = (
             message.content.tweet as Tweet
         )?.username;
@@ -65,7 +67,7 @@ export const airdropAction: Action = {
             // get airdrop status
             console.log("Checking airdrop status...");
             const airdropStatusResp = await getAirdropStatus({
-                castHash,
+                castFid,
                 tweetUsername,
             });
             elizaLogger.log("Airdrop Status:", airdropStatusResp);
@@ -133,7 +135,7 @@ export const airdropAction: Action = {
             console.log("Executing airdrop api call...");
             try {
                 const result = await airdrop({
-                    castHash,
+                    castFid,
                     tweetUsername,
                 });
                 elizaLogger.log("Airdrop api call result: ", result);

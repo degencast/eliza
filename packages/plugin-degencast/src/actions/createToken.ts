@@ -12,6 +12,8 @@ import {
     type Action,
 } from "@elizaos/core";
 import { z } from "zod";
+import { Cast } from "@neynar/nodejs-sdk/build/api";
+import { Tweet } from "agent-twitter-client";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TokenMetadataSchema = z.object({
@@ -57,6 +59,16 @@ export const createTokenAction: Action = {
         } else {
             state = await runtime.updateRecentMessageState(state);
         }
+        const castHash: `0x${string}` | undefined = (
+            message.content.cast as Cast
+        )?.hash as `0x${string}`;
+        const castFid: number | undefined = (message.content.cast as Cast)
+            ?.author?.fid;
+        const tweetId: string | undefined = (message.content.tweet as Tweet)
+            ?.id;
+        const tweetUsername: string | undefined = (
+            message.content.tweet as Tweet
+        )?.username;
         // console.log("CREATE_TOKEN State: ", state);
         // Generate structured content from natural language
         const context = composeContext({
@@ -86,9 +98,10 @@ export const createTokenAction: Action = {
         try {
             console.log("Executing create api call...");
             const result = await createMeme({
-                castHash:
-                    (message.content.hash as `0x${string}`) ||
-                    "0x0000000000000000000000000000000000000000",
+                castHash,
+                castFid,
+                tweetId,
+                tweetUsername,
                 tokenMetadata: tokenMetadata as CreateTokenMetadata,
             });
 

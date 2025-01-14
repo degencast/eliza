@@ -16,9 +16,15 @@ const WAIT_TIME_BETWEEN_ATTEMPTS = 1000;
 
 export const createMeme = async ({
     castHash,
+    castFid,
+    tweetId,
+    tweetUsername,
     tokenMetadata,
 }: {
     castHash: `0x${string}` | undefined;
+    castFid: number | undefined;
+    tweetId: string | undefined;
+    tweetUsername: string | undefined;
     tokenMetadata: CreateTokenMetadata;
 }): Promise<ApiResp<CreateTokenData>> => {
     if (!castHash) {
@@ -37,7 +43,13 @@ export const createMeme = async ({
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ castHash, ...tokenMetadata }),
+            body: JSON.stringify({
+                castHash,
+                castFid,
+                tweetId,
+                tweetUsername,
+                ...tokenMetadata,
+            }),
         });
 
         const createTokenRespData = await createTokenResp.json();
@@ -91,13 +103,13 @@ export const createMeme = async ({
 };
 
 export const airdrop = async ({
-    castHash,
+    castFid,
     tweetUsername,
 }: {
-    castHash: `0x${string}` | undefined;
+    castFid: number | undefined;
     tweetUsername: string | undefined;
 }): Promise<ApiResp<AirDropData>> => {
-    if (!castHash && !tweetUsername) {
+    if (!castFid && !tweetUsername) {
         return {
             code: ApiRespCode.ERROR,
             msg: "Cast hash or twitter username is required",
@@ -105,14 +117,14 @@ export const airdrop = async ({
     }
 
     try {
-        console.log("requesting airdrop", castHash);
+        console.log("requesting airdrop", castFid, tweetUsername);
 
         const resp = await fetch(DEGENCAST_API_URL + "/memes/airdrops", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ castHash, tweetUsername }),
+            body: JSON.stringify({ castFid, tweetUsername }),
         });
 
         const respData = await resp.json();
@@ -128,13 +140,13 @@ export const airdrop = async ({
 };
 
 export const getAirdropStatus = async ({
-    castHash,
+    castFid,
     tweetUsername,
 }: {
-    castHash: `0x${string}` | undefined;
+    castFid: number | undefined;
     tweetUsername: string | undefined;
 }): Promise<ApiResp<AirdropStatus>> => {
-    if (!castHash && !tweetUsername) {
+    if (!castFid && !tweetUsername) {
         return {
             code: ApiRespCode.ERROR,
             msg: "Cast hash or twitter username is required",
@@ -142,13 +154,13 @@ export const getAirdropStatus = async ({
     }
 
     try {
-        console.log("get cast author airdrop status", castHash);
+        console.log("get cast author airdrop status", castFid, tweetUsername);
 
         const resp = await fetch(
             DEGENCAST_API_URL +
-                "/memes/airdrop/users?castHash=" +
-                castHash +
-                "&twitterUsername=" +
+                "/memes/airdrop/users?castFid=" +
+                castFid +
+                "&tweetUsername=" +
                 tweetUsername,
             {
                 method: "GET",
