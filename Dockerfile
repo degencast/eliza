@@ -4,12 +4,23 @@ FROM node:23.3.0-slim AS builder
 # Install pnpm globally and install necessary build tools
 RUN npm install -g pnpm@9.4.0 && \
     apt-get update && \
-    apt-get install -y git python3 make g++ && \
+    apt-get install -y openssh-client git python3 make g++ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Set Python 3 as the default python
 RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# 创建 .ssh 目录并设置适当的权限
+RUN mkdir -p /root/.ssh
+# 复制本地的 SSH 私钥到 Docker 镜像中（确保你已经将私钥存放在合适的位置）
+COPY ~/.ssh/id_rsa /root/.ssh/id_rsa
+# 设置权限，确保私钥仅对 root 用户可读
+RUN chmod 600 /root/.ssh/id_rsa
+# 添加 GitHub 的 SSH 公钥到 known_hosts，避免首次连接时的验证错误
+RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
+# 配置 SSH，禁用 strict host key checking（可选）
+RUN echo "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" >> /root/.ssh/config
 
 # Set the working directory
 WORKDIR /app
@@ -52,4 +63,4 @@ COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
 # Set the command to run the application
-CMD ["pnpm", "start"]
+CMD ["pnpm", "start", "--character='characters/degencastAI.character.json'"]

@@ -112,6 +112,7 @@ export class FarcasterClient {
         const response = await this.neynar.fetchCastsForUser({
             fid: request.fid,
             limit: request.pageSize,
+            includeReplies: false,
         });
         response.casts.map((cast) => {
             this.cache.set(`farcaster/cast/${cast.hash}`, cast);

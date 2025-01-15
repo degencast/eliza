@@ -80,6 +80,7 @@
         "@elizaos/plugin-avalanche": "workspace:*",
         "@elizaos/plugin-video-generation": "workspace:*",
         "@elizaos/plugin-web-search": "workspace:*",
+        "@us3r/plugin-degencast": "workspace:*",
         "@elizaos/plugin-letzai": "workspace:*",
         "@elizaos/plugin-thirdweb": "workspace:*",
         "@elizaos/plugin-genlayer": "workspace:*",

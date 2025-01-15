@@ -36,8 +36,8 @@ export class FarcasterPostManager {
                 (Math.floor(Math.random() * (4 - 1 + 1)) + 1) * 60 * 60 * 1000
             ); // Random interval between 1 and 4 hours
         };
-
-        generateNewCastLoop();
+        //temporary disable
+        //generateNewCastLoop();
     }
 
     public async stop() {

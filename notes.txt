@@ -1,0 +1,12 @@
+Managed to login to twitter finally by spoofing the browser for VPS
+For anyone that is having trouble this is way easier than setting up graphic interface or VPN
+
+used Firefox settings > Network settings > manual proxy config
+
+Set SOCKS Host to 127.0.0.1 on port 8080
+ssh -D 127.0.0.1:8080 user@<vps ip address>.
+#this using Mac/Windows you may need to generate keys
+
+Then use firefox browser to login and complete verification
+this shit works!
+make sure you do the fire fox stuff on your current pc but do the SSH into your vps, then grab the cookies from the modified settings fire fox browsers cookies using like "Edit cookie" extension and put that into the .env of your server

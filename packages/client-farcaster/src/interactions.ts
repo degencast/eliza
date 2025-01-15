@@ -1,27 +1,27 @@
 import {
     composeContext,
+    Content,
+    elizaLogger,
     generateMessageResponse,
     generateShouldRespond,
+    HandlerCallback,
     Memory,
     ModelClass,
     stringToUuid,
-    elizaLogger,
-    HandlerCallback,
-    Content,
     type IAgentRuntime,
 } from "@elizaos/core";
 import type { FarcasterClient } from "./client";
 import { toHex } from "viem";
+import { sendCast } from "./actions";
 import { buildConversationThread, createCastMemory } from "./memory";
-import { Cast, Profile } from "./types";
 import {
     formatCast,
     formatTimeline,
     messageHandlerTemplate,
     shouldRespondTemplate,
 } from "./prompts";
+import { Cast, Profile } from "./types";
 import { castUuid } from "./utils";
-import { sendCast } from "./actions";
 
 export class FarcasterInteractionManager {
     private timeout: NodeJS.Timeout | undefined;
@@ -98,7 +98,7 @@ export class FarcasterInteractionManager {
             });
 
             const memory: Memory = {
-                content: { text: mention.text, hash: mention.hash },
+                content: { text: mention.text },
                 agentId: this.runtime.agentId,
                 userId,
                 roomId,
@@ -276,7 +276,13 @@ export class FarcasterInteractionManager {
         const newState = await this.runtime.updateRecentMessageState(state);
 
         await this.runtime.processActions(
-            memory,
+            {
+                ...memory,
+                content: {
+                    ...memory.content,
+                    cast,
+                },
+            },
             responseMessages,
             newState,
             callback
