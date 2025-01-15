@@ -7,7 +7,6 @@
     "dependencies": {
         "@elizaos/core": "workspace:*",
         "@neynar/nodejs-sdk": "^2.0.3",
-        "agent-twitter-client": "0.0.18",
         "tsup": "8.3.5"
     },
     "scripts": {

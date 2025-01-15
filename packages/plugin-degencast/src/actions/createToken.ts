@@ -12,8 +12,6 @@ import {
     type Action,
 } from "@elizaos/core";
 import { z } from "zod";
-import { Cast } from "@neynar/nodejs-sdk/build/api";
-import { Tweet } from "agent-twitter-client";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TokenMetadataSchema = z.object({
@@ -59,17 +57,24 @@ export const createTokenAction: Action = {
         } else {
             state = await runtime.updateRecentMessageState(state);
         }
-        const castHash: `0x${string}` | undefined = (
-            message.content.cast as Cast
-        )?.hash as `0x${string}`;
-        const castFid: number | undefined = (message.content.cast as Cast)
-            ?.author?.fid;
-        const tweetId: string | undefined = (message.content.tweet as Tweet)
-            ?.id;
-        const tweetUsername: string | undefined = (
-            message.content.tweet as Tweet
-        )?.username;
         // console.log("CREATE_TOKEN State: ", state);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const cast: any = message.content.cast;
+        const castHash: `0x${string}` | undefined = cast?.hash as `0x${string}`;
+        const castFid: number | undefined = cast?.authorFid;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const tweet: any | undefined = message.content.tweet;
+        const tweetId: string | undefined = tweet?.id;
+        const tweetUsername: string | undefined = tweet?.username;
+        console.log(
+            "Airdrop message params:",
+            castHash,
+            castFid,
+            tweetId,
+            tweetUsername
+        );
+
         // Generate structured content from natural language
         const context = composeContext({
             state,

@@ -27,10 +27,10 @@ export const createMeme = async ({
     tweetUsername: string | undefined;
     tokenMetadata: CreateTokenMetadata;
 }): Promise<ApiResp<CreateTokenData>> => {
-    if (!castHash) {
+    if (!castHash && !tweetId) {
         return {
             code: ApiRespCode.ERROR,
-            msg: "Cast hash is required",
+            msg: "cast hash or twitter id is required",
         };
     }
 
@@ -112,7 +112,7 @@ export const airdrop = async ({
     if (!castFid && !tweetUsername) {
         return {
             code: ApiRespCode.ERROR,
-            msg: "Cast hash or twitter username is required",
+            msg: "farcaster fid or twitter username is required",
         };
     }
 
@@ -149,7 +149,7 @@ export const getAirdropStatus = async ({
     if (!castFid && !tweetUsername) {
         return {
             code: ApiRespCode.ERROR,
-            msg: "Cast hash or twitter username is required",
+            msg: "farcaster fid or twitter username is required",
         };
     }
 
